@@ -3,10 +3,22 @@
 #include <string.h>
 #include "ll.h"
 
-// ฟังก์ชันสำหรับแทรกโหนด (Insert)
+// ฟังก์ชันตรวจสอบว่า List ว่างหรือไม่
+int isEmpty(LLPtr sPtr) {
+    return sPtr == NULL;
+}
+
+// ฟังก์ชันแสดงเมนูคำแนะนำ
+void instructions(void) {
+    printf("Enter your choice:\n"
+           "   1 to insert an element into the list.\n"
+           "   2 to delete an element from the list.\n"
+           "   3 to end.\n");
+}
+
+// ฟังก์ชันแทรกโหนด (เรียงตาม ID)
 void insert(LLPtr *sPtr, int id, char name[]) {
     LLPtr newPtr = malloc(sizeof(LLnode));
-
     if (newPtr != NULL) {
         newPtr->id = id;
         strcpy(newPtr->name, name);
@@ -21,44 +33,41 @@ void insert(LLPtr *sPtr, int id, char name[]) {
             currentPtr = currentPtr->nextPtr;
         }
 
-        if (previousPtr == NULL) { 
+        if (previousPtr == NULL) { // แทรกที่หัว
             newPtr->nextPtr = *sPtr;
             if (*sPtr != NULL) (*sPtr)->pPtr = newPtr;
             *sPtr = newPtr;
-        } else { 
+        } else { // แทรกกลางหรือท้าย
             previousPtr->nextPtr = newPtr;
             newPtr->pPtr = previousPtr;
             newPtr->nextPtr = currentPtr;
             if (currentPtr != NULL) currentPtr->pPtr = newPtr;
         }
-    } else {
-        printf("%d not inserted. No memory available.\n", id);
     }
 }
 
-// ฟังก์ชันสำหรับลบโหนด (Delete)
+// ฟังก์ชันลบโหนด
 void deletes(LLPtr *sPtr, int id) {
     LLPtr currentPtr = *sPtr;
-
     while (currentPtr != NULL && currentPtr->id != id) {
         currentPtr = currentPtr->nextPtr;
     }
-
+    
     if (currentPtr != NULL) {
         LLPtr tempPtr = currentPtr;
-
-        if (currentPtr->pPtr == NULL) { 
+        if (currentPtr->pPtr == NULL) { // ลบหัว
             *sPtr = currentPtr->nextPtr;
             if (*sPtr != NULL) (*sPtr)->pPtr = NULL;
-        } else { 
+        } else { // ลบกลางหรือท้าย
             currentPtr->pPtr->nextPtr = currentPtr->nextPtr;
             if (currentPtr->nextPtr != NULL) {
                 currentPtr->nextPtr->pPtr = currentPtr->pPtr;
             }
         }
         free(tempPtr);
+        printf("ID %d deleted.\n", id);
     } else {
-        printf("%d not found.\n", id);
+        printf("ID %d not found.\n", id);
     }
 }
 
@@ -89,4 +98,16 @@ void printListReverse(LLPtr currentPtr) {
         }
         printf("NULL\n");
     }
+}
+
+// ฟังก์ชันเคลียร์หน่วยความจำก่อนจบโปรแกรม
+void clearList(LLPtr *sPtr) {
+    LLPtr currentPtr = *sPtr;
+    LLPtr tempPtr;
+    while (currentPtr != NULL) {
+        tempPtr = currentPtr;
+        currentPtr = currentPtr->nextPtr;
+        free(tempPtr);
+    }
+    *sPtr = NULL;
 }

@@ -1,22 +1,26 @@
-#ifndef ll_h
-#define ll_h
+#ifndef LL_H
+#define LL_H
 
 #define SIZE 50
 
+// โครงสร้าง Node ของ Doubly Linked List
 struct Node {
-    int id;                // ต้องใช้ชื่อ id ตามใน ll.c
-    char name[SIZE];       // ต้องใช้ชื่อ name
-    struct Node *nextPtr;
-    struct Node *pPtr;     // ต้องใช้ชื่อ pPtr สำหรับ Doubly Linked List
+    int id;                // รหัส
+    char name[SIZE];       // ชื่อ
+    struct Node *nextPtr;  // ชี้ไปโหนดถัดไป
+    struct Node *pPtr;     // ชี้ไปโหนดก่อนหน้า
 };
 
 typedef struct Node LLnode;
 typedef LLnode *LLPtr;
 
-// ฟังก์ชันต้นแบบ
+// ฟังก์ชันต้นแบบทั้งหมดที่จำเป็น
 void insert(LLPtr *sPtr, int id, char name[]);
 void deletes(LLPtr *sPtr, int id);
 void printList(LLPtr currentPtr);
 void printListReverse(LLPtr currentPtr);
+int isEmpty(LLPtr sPtr);
+void instructions(void);
+void clearList(LLPtr *sPtr);
 
 #endif
