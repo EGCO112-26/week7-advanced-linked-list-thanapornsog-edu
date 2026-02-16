@@ -94,10 +94,10 @@ void printList( LLPtr currentPtr )
     if ( isEmpty( currentPtr ) ) {
         puts( "List is empty." );
     } else {
-        // Autograde ไม่ได้เช็คคำว่า "The list is:" แต่ใส่ไว้ตามโจทย์เดิม
         puts( "The list is:" );
         while ( currentPtr != NULL ) {
-            printf( "%d %s --> ", currentPtr->id, currentPtr->name );
+            // แก้ตรงนี้: เอาเว้นวรรคหลัง --> ออก
+            printf( "%d %s -->", currentPtr->id, currentPtr->name );
             currentPtr = currentPtr->nextPtr;
         }
         puts( "NULL" );
@@ -114,7 +114,8 @@ void printListReverse( LLPtr currentPtr )
 
     puts( "The list is (Reverse):" );
     while ( currentPtr != NULL ) {
-        printf( "%d %s --> ", currentPtr->id, currentPtr->name );
+        // แก้ตรงนี้: เอาเว้นวรรคหลัง --> ออก
+        printf( "%d %s -->", currentPtr->id, currentPtr->name );
         currentPtr = currentPtr->pPtr;
     }
     puts( "NULL" );
@@ -127,8 +128,6 @@ void clearList( LLPtr *sPtr )
 
     while ( currentPtr != NULL ) {
         tempPtr = currentPtr;
-        // Autograde ไม่ได้ require output ตรงนี้ แต่ใส่ไว้เพื่อความสมบูรณ์
-        // printf( "delete %d\n", tempPtr->id ); 
         currentPtr = currentPtr->nextPtr;
         free( tempPtr );
     }
