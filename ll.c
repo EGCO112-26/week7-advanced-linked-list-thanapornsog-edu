@@ -5,7 +5,7 @@
 
 // ฟังก์ชันสำหรับแทรกโหนด (Insert)
 void insert(LLPtr *sPtr, int id, char name[]) {
-    LLPtr newPtr = malloc(sizeof(LL));
+    LLPtr newPtr = malloc(sizeof(LLnode));
 
     if (newPtr != NULL) {
         newPtr->id = id;
@@ -16,17 +16,16 @@ void insert(LLPtr *sPtr, int id, char name[]) {
         LLPtr previousPtr = NULL;
         LLPtr currentPtr = *sPtr;
 
-        // วนลูปหาตำแหน่งที่จะแทรก (เรียงตาม ID)
         while (currentPtr != NULL && id > currentPtr->id) {
             previousPtr = currentPtr;
             currentPtr = currentPtr->nextPtr;
         }
 
-        if (previousPtr == NULL) { // แทรกที่หัว list
+        if (previousPtr == NULL) { 
             newPtr->nextPtr = *sPtr;
             if (*sPtr != NULL) (*sPtr)->pPtr = newPtr;
             *sPtr = newPtr;
-        } else { // แทรกระหว่างกลางหรือท้าย
+        } else { 
             previousPtr->nextPtr = newPtr;
             newPtr->pPtr = previousPtr;
             newPtr->nextPtr = currentPtr;
@@ -41,7 +40,6 @@ void insert(LLPtr *sPtr, int id, char name[]) {
 void deletes(LLPtr *sPtr, int id) {
     LLPtr currentPtr = *sPtr;
 
-    // วนลูปหาโหนดที่มี ID ตรงกับที่ระบุ
     while (currentPtr != NULL && currentPtr->id != id) {
         currentPtr = currentPtr->nextPtr;
     }
@@ -49,25 +47,22 @@ void deletes(LLPtr *sPtr, int id) {
     if (currentPtr != NULL) {
         LLPtr tempPtr = currentPtr;
 
-        if (currentPtr->pPtr == NULL) { // กรณีลบตัวแรก (Head)
+        if (currentPtr->pPtr == NULL) { 
             *sPtr = currentPtr->nextPtr;
             if (*sPtr != NULL) (*sPtr)->pPtr = NULL;
-        } else { // กรณีลบตัวกลางหรือตัวท้าย
+        } else { 
             currentPtr->pPtr->nextPtr = currentPtr->nextPtr;
-            
-            // ถ้ามีตัวถัดไป ให้ตัวถัดไปชี้กลับมาที่ตัวก่อนหน้า
             if (currentPtr->nextPtr != NULL) {
                 currentPtr->nextPtr->pPtr = currentPtr->pPtr;
             }
         }
         free(tempPtr);
-        printf("ID %d deleted.\n", id);
     } else {
-        printf("ID %d not found.\n", id);
+        printf("%d not found.\n", id);
     }
 }
 
-// ฟังก์ชันพิมพ์ List (จากหน้าไปหลัง)
+// ฟังก์ชันพิมพ์ List (หน้าไปหลัง)
 void printList(LLPtr currentPtr) {
     if (currentPtr == NULL) {
         printf("List is empty.\n");
@@ -80,16 +75,14 @@ void printList(LLPtr currentPtr) {
     }
 }
 
-// ฟังก์ชันพิมพ์ List ย้อนกลับ (Reverse)
+// ฟังก์ชันพิมพ์ List ย้อนกลับ (หลังมาหน้า)
 void printListReverse(LLPtr currentPtr) {
     if (currentPtr == NULL) {
         printf("List is empty.\n");
     } else {
-        // วนไปจนโหนดสุดท้าย
         while (currentPtr->nextPtr != NULL) {
             currentPtr = currentPtr->nextPtr;
         }
-        // วนกลับโดยใช้ pPtr
         while (currentPtr != NULL) {
             printf("%d %s -->", currentPtr->id, currentPtr->name);
             currentPtr = currentPtr->pPtr;
