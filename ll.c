@@ -1,74 +1,100 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ll.h"
 
-struct Node {
-    int id;
-    char name[50];
-    struct Node *nextPtr;
-    struct Node *pPtr; 
-};
+// ฟังก์ชันสำหรับแทรกโหนด (Insert)
+void insert(LLPtr *sPtr, int id, char name[]) {
+    LLPtr newPtr = malloc(sizeof(LL));
 
-typedef struct Node LLnode;
-typedef LLnode *LLPtr;
-
-void instructions( void )
-{
-    puts( "Enter your choice:\n"
-          "   1 to insert an element into the list.\n"
-          "   2 to delete an element from the list.\n"
-          "   3 to end." );
-}
-
-void insert( LLPtr *sPtr, int id, char *name )
-{
-    LLPtr newPtr;
-    LLPtr previousPtr;
-    LLPtr currentPtr;
-
-    newPtr = (LLPtr) malloc( sizeof( LLnode ) );
-
-    if ( newPtr != NULL ) {
+    if (newPtr != NULL) {
         newPtr->id = id;
-        strcpy( newPtr->name, name );
+        strcpy(newPtr->name, name);
         newPtr->nextPtr = NULL;
         newPtr->pPtr = NULL;
 
-        previousPtr = NULL;
-        currentPtr = *sPtr;
+        LLPtr previousPtr = NULL;
+        LLPtr currentPtr = *sPtr;
 
-        while ( currentPtr != NULL && id > currentPtr->id ) {
+        // วนลูปหาตำแหน่งที่จะแทรก (เรียงตาม ID)
+        while (currentPtr != NULL && id > currentPtr->id) {
             previousPtr = currentPtr;
             currentPtr = currentPtr->nextPtr;
         }
 
-        newPtr->nextPtr = currentPtr;
-        if ( currentPtr != NULL ) {
-            currentPtr->pPtr = newPtr;
-        }
-
-        newPtr->pPtr = previousPtr;
-        if ( previousPtr == NULL ) {
+        if (previousPtr == NULL) { // แทรกที่หัว list
+            newPtr->nextPtr = *sPtr;
+            if (*sPtr != NULL) (*sPtr)->pPtr = newPtr;
             *sPtr = newPtr;
-        } else {
+        } else { // แทรกระหว่างกลางหรือท้าย
             previousPtr->nextPtr = newPtr;
+            newPtr->pPtr = previousPtr;
+            newPtr->nextPtr = currentPtr;
+            if (currentPtr != NULL) currentPtr->pPtr = newPtr;
         }
     } else {
-        printf( "%d not inserted. No memory available.\n", id );
+        printf("%d not inserted. No memory available.\n", id);
     }
 }
 
-int deletes( LLPtr *sPtr, int id )
-{
+// ฟังก์ชันสำหรับลบโหนด (Delete) - จุดที่มีปัญหาใน Log ของคุณ
+void deletes(LLPtr *sPtr, int id) {
     LLPtr currentPtr = *sPtr;
 
-    if ( *sPtr == NULL ) return 0;
-
-    while ( currentPtr != NULL && currentPtr->id != id ) {
+    // วนลูปหาโหนดที่มี ID ตรงกับที่ระบุ
+    while (currentPtr != NULL && currentPtr->id != id) {
         currentPtr = currentPtr->nextPtr;
     }
 
-    if ( currentPtr == NULL ) return 0;
+    if (currentPtr != NULL) {
+        LLPtr tempPtr = currentPtr;
 
-    if ( currentPtr->pPtr != NULL ) {
-        currentPtr->pPtr->nextPtr = currentPtr;
+        if (currentPtr->pPtr == NULL) { // กรณีลบตัวแรก (Head)
+            *sPtr = currentPtr->nextPtr;
+            if (*sPtr != NULL) (*sPtr)->pPtr = NULL;
+        } else { // กรณีลบตัวกลางหรือตัวท้าย
+            // บรรทัดที่ 74 ที่เคย Error: เชื่อมตัวก่อนหน้าให้ข้ามตัวปัจจุบันไปหาตัวถัดไป
+            currentPtr->pPtr->nextPtr = currentPtr->nextPtr;
+            
+            // ถ้ามีตัวถัดไป ให้ตัวถัดไปชี้กลับมาที่ตัวก่อนหน้า
+            if (currentPtr->nextPtr != NULL) {
+                currentPtr->nextPtr->pPtr = currentPtr->pPtr;
+            }
+        }
+        free(tempPtr);
+        printf("ID %d deleted.\n", id);
+    } else {
+        printf("ID %d not found.\n", id);
+    }
+} // ปิดปีกกาฟังก์ชันให้ครบ
+
+// ฟังก์ชันพิมพ์ List (จากหน้าไปหลัง)
+void printList(LLPtr currentPtr) {
+    if (currentPtr == NULL) {
+        puts("List is empty.\n");
+    } else {
+        while (currentPtr != NULL) {
+            printf("%d %s -->", currentPtr->id, currentPtr->name);
+            currentPtr = currentPtr->nextPtr;
+        }
+        puts("NULL\n");
+    }
+}
+
+// ฟังก์ชันพิมพ์ List ย้อนกลับ (Reverse) - ถ้าโจทย์ต้องการ
+void printListReverse(LLPtr currentPtr) {
+    if (currentPtr == NULL) {
+        puts("List is empty.\n");
+    } else {
+        // วนไปจนสุดท้ายก่อน
+        while (currentPtr->nextPtr != NULL) {
+            currentPtr = currentPtr->nextPtr;
+        }
+        // วนกลับโดยใช้ pPtr
+        while (currentPtr != NULL) {
+            printf("%d %s -->", currentPtr->id, currentPtr->name);
+            currentPtr = currentPtr->pPtr;
+        }
+        puts("NULL\n");
+    }
+}
