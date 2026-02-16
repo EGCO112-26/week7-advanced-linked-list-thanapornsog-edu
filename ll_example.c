@@ -1,57 +1,80 @@
-// Fig. 12.3: fig12_03.c
-// Inserting and deleting nodes in a list
+// ไฟล์: ll_example.c
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+// ต้องประกาศ Struct ให้เหมือนกับใน ll.c (หรือถ้ามีไฟล์ .h ให้แก้ในนั้น)
+struct Node {
+    int id;
+    char name[50]; 
+    struct Node *nextPtr;
+};
+typedef struct Node LLnode;
+typedef LLnode *LLPtr;
+
+// Prototypes
+void insert( LLPtr *sPtr, int id, char *name );
+int deletes( LLPtr *sPtr, int id );
+int isEmpty( LLPtr sPtr );
+void printList( LLPtr currentPtr );
+void printListReverse( LLPtr currentPtr );
+void instructions( void );
+void clearList( LLPtr *sPtr );
 
 int main( void )
-{ 
-   LLPtr startPtr = NULL; // initially there are no nodes
-   unsigned int choice; // user's choice
-   int item; // char entered by user
+{
+    LLPtr startPtr = NULL; 
+    unsigned int choice;
+    int id;
+    char name[50]; // ตัวแปรเก็บชื่อ
 
-   instructions(); // display the menu
-   printf( "%s", "? " );
-   scanf( "%u", &choice );
+    instructions();
+    printf( "? " );
+    scanf( "%u", &choice );
 
-   // loop while user does not choose 3
-   while ( choice != 3 ) { 
+    while ( choice != 3 ) {
+        switch ( choice ) {
+            case 1:
+                printf( "Enter id and name: " ); // ข้อความตามรูป
+                scanf( "%d %s", &id, name ); // รับค่า id และ name
+                insert( &startPtr, id, name );
+                
+                // ปริ้น 2 บรรทัดตามรูป
+                printList( startPtr );        // บรรทัดแรก (ปกติ)
+                printListReverse( startPtr ); // บรรทัดสอง (ย้อนหลัง)
+                puts( "NULL" );               // ปิดท้ายบรรทัดย้อนหลัง
+                break;
 
-      switch ( choice ) { 
-         case 1:
-            printf( "%s", "Enter a number: " );
-            scanf( "%d", &item );
-            insert( &startPtr, item ); // insert item in list
-            printList( startPtr );
-            break;
-         case 2: // delete an element
-            // if list is not empty
-            if ( !isEmpty( startPtr ) ) { 
-               printf( "%s", "Enter number to be deleted: " );
-               scanf( "%d", &item );
+            case 2:
+                if ( !isEmpty( startPtr ) ) {
+                    printf( "Enter number to be deleted: " );
+                    scanf( "%d", &id );
 
-               // if character is found, remove it
-               if ( deletes( &startPtr, item ) ) { // remove item
-                  printf( "%d deleted.\n", item );
-                  printList( startPtr );
-               } // end if
-               else {
-                  printf( "%d not found.\n\n", item );
-               } // end else
-            } // end if
-            else {
-               puts( "List is empty.\n" );
-            } // end else
+                    if ( deletes( &startPtr, id ) ) {
+                        printf( "%d deleted.\n", id );
+                        // ลบเสร็จ ปริ้น 2 บรรทัดเหมือนกัน
+                        printList( startPtr );
+                        printListReverse( startPtr );
+                        puts( "NULL" );
+                    } else {
+                        printf( "%d not found.\n\n", id );
+                    }
+                } else {
+                    puts( "List is empty.\n" );
+                }
+                break;
+            default:
+                puts( "Invalid choice.\n" );
+                instructions();
+                break;
+        }
+        printf( "? " );
+        scanf( "%u", &choice );
+    }
 
-            break;
-         default:
-            puts( "Invalid choice.\n" );
-            instructions();
-            break;
-      } // end switch
-
-      printf( "%s", "? " );
-      scanf( "%u", &choice );
-   } // end while
-  /* Clear all nodes at the end of nodes*/
-   puts( "End of run." );
-} // end main
+    // ส่วนจบการทำงาน (ตามรูปภาพ)
+    puts( "Clear all nodes" );
+    clearList( &startPtr );
+    puts( "End of run." );
+    return 0;
+}
