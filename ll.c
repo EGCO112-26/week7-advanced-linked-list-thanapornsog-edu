@@ -37,7 +37,7 @@ void insert(LLPtr *sPtr, int id, char name[]) {
     }
 }
 
-// ฟังก์ชันสำหรับลบโหนด (Delete) - จุดที่มีปัญหาใน Log ของคุณ
+// ฟังก์ชันสำหรับลบโหนด (Delete)
 void deletes(LLPtr *sPtr, int id) {
     LLPtr currentPtr = *sPtr;
 
@@ -53,7 +53,6 @@ void deletes(LLPtr *sPtr, int id) {
             *sPtr = currentPtr->nextPtr;
             if (*sPtr != NULL) (*sPtr)->pPtr = NULL;
         } else { // กรณีลบตัวกลางหรือตัวท้าย
-            // บรรทัดที่ 74 ที่เคย Error: เชื่อมตัวก่อนหน้าให้ข้ามตัวปัจจุบันไปหาตัวถัดไป
             currentPtr->pPtr->nextPtr = currentPtr->nextPtr;
             
             // ถ้ามีตัวถัดไป ให้ตัวถัดไปชี้กลับมาที่ตัวก่อนหน้า
@@ -66,27 +65,27 @@ void deletes(LLPtr *sPtr, int id) {
     } else {
         printf("ID %d not found.\n", id);
     }
-} // ปิดปีกกาฟังก์ชันให้ครบ
+}
 
 // ฟังก์ชันพิมพ์ List (จากหน้าไปหลัง)
 void printList(LLPtr currentPtr) {
     if (currentPtr == NULL) {
-        puts("List is empty.\n");
+        printf("List is empty.\n");
     } else {
         while (currentPtr != NULL) {
             printf("%d %s -->", currentPtr->id, currentPtr->name);
             currentPtr = currentPtr->nextPtr;
         }
-        puts("NULL\n");
+        printf("NULL\n");
     }
 }
 
-// ฟังก์ชันพิมพ์ List ย้อนกลับ (Reverse) - ถ้าโจทย์ต้องการ
+// ฟังก์ชันพิมพ์ List ย้อนกลับ (Reverse)
 void printListReverse(LLPtr currentPtr) {
     if (currentPtr == NULL) {
-        puts("List is empty.\n");
+        printf("List is empty.\n");
     } else {
-        // วนไปจนสุดท้ายก่อน
+        // วนไปจนโหนดสุดท้าย
         while (currentPtr->nextPtr != NULL) {
             currentPtr = currentPtr->nextPtr;
         }
@@ -95,6 +94,6 @@ void printListReverse(LLPtr currentPtr) {
             printf("%d %s -->", currentPtr->id, currentPtr->name);
             currentPtr = currentPtr->pPtr;
         }
-        puts("NULL\n");
+        printf("NULL\n");
     }
 }
