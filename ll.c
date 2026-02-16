@@ -71,4 +71,4 @@ int deletes( LLPtr *sPtr, int id )
     if ( currentPtr == NULL ) return 0;
 
     if ( currentPtr->pPtr != NULL ) {
-        currentPtr->pPtr->nextPtr = current
+        currentPtr->pPtr->nextPtr = currentPtr;
