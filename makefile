@@ -1,10 +1,8 @@
-compile: ll_example.c
-	 gcc ll_example.c -o ll
+compile: ll_example.c ll.c
+	 @gcc ll_example.c ll.c -o mylist
 
+run: mylist
+	 @./mylist
 
-run: ll
-	 ./ll
-
-
-clean: ll
-	 rm ll
+clean:
+	 rm mylist
